@@ -2,17 +2,20 @@ from pynput import mouse, keyboard
 import threading
 import time
 from Logger import Logger
+from Config import config
 
 class Monitor:
-    def __init__(self, bufferSec = 5):
-        self.bufferSec = bufferSec
+
+    def __init__(self):
+        self.config = config
+        self.bufferSec = self.config["bufferSec"]
+        self.timeLimit = self.config["timeLimit"]
         self.timeUsed = 0
-        self.timeLimit = 60*10 # in seconds
         self.logger = Logger()
     def start(self):
         pass
 
-    def addTime(self, time: int | None):
+    def addTime(self, time: int):
         if not time:
             time = self.bufferSec
         self.timeUsed += time
@@ -25,12 +28,12 @@ class Monitor:
 
 
 class IoMonitor(Monitor):
-    def __init__(self, bufferSec = 5):
-        super().__init__(bufferSec)
+    def __init__(self):
+        super().__init__()
         self.lastMoved = time.time()
         self.lastTyped = time.time()
         self.keystrokeBuffer = ""
-        self.keystrokeBufferSec = 5
+        self.keystrokeBufferSec = self.config["keystrokeBufferSec"]
         self.mouseListener = mouse.Listener(on_move=self.on_interact)
         self.keyboardListener = keyboard.Listener(on_press=self.on_keypress)
         # self.mouseListener.start()

@@ -10,3 +10,7 @@ pip-selfcheck.json
 __pycache__
 log.txt
 pyvenv.cfg
+
+build
+dist
+*.spec

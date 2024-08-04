@@ -7,10 +7,11 @@ import os
 import Monitor
 import threading
 import gui
+from Config import config
 
 appName = "z"
 def checkTime(monitor: Monitor.IoMonitor):
-    warningTimes = [60*5, 60*2, 60*1]
+    warningTimes = config["gui"]["warningTimes"]
     while True:
         time.sleep(1)
         currentTime = monitor.getTime()

@@ -8,5 +8,5 @@
 .venv
 pip-selfcheck.json
 __pycache__
-*.txt
+log.txt
 pyvenv.cfg

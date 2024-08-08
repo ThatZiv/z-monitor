@@ -22,9 +22,9 @@ jobs:
           apt update -y
           wget "https://github.com/actions/python-versions/releases/download/3.10.2-1805098134/python-3.10.2-linux-20.04-x64.tar.gz" -O python.tar.gz
           tar xzf python.tar.gz
-          sudo mv python/ /opt/
-          sudo ln -s /opt/python/bin/python3 /usr/local/bin/python
-          sudo ln -s /opt/python/bin/pip3 /usr/local/bin/pip
+          mv python/ /opt/
+          ln -s /opt/python/bin/python3 /usr/local/bin/python
+          ln -s /opt/python/bin/pip3 /usr/local/bin/pip
           python --version
           pip --version
 

@@ -22,10 +22,10 @@ jobs:
           apt update -y
           mkdir -p /opt/python
           wget "https://github.com/actions/python-versions/releases/download/3.10.2-1805098134/python-3.10.2-linux-20.04-x64.tar.gz" -O python.tar.gz
-
           tar xzf python.tar.gz -C /opt/python
           ln -s /opt/python/bin/python3 /usr/local/bin/python
           ln -s /opt/python/bin/pip3 /usr/local/bin/pip
+          export LD_LIBRARY_PATH=/opt/python/lib:$LD_LIBRARY_PATH
           python --version
           pip --version
 

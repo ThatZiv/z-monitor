@@ -17,10 +17,14 @@ jobs:
       - uses: actions/checkout@v2
 
       - name: Set up python
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.10"
-          cache: "pip" # caching pip dependencies
+        run: |
+          # install python3.10 and pip
+          sudo apt update
+          sudo apt install -y python3.10 python3.10-distutils
+          # Ensure python3.10 is used as python
+          sudo update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.10 1
+          sudo update-alternatives --install /usr/bin/python python /usr/bin/python3.10 1
+          sudo update-alternatives --install /usr/bin/pip pip /usr/bin/pip3 1
 
       - name: Install dependencies
         run: |

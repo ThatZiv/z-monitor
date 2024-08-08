@@ -1,4 +1,3 @@
-import pyautogui as pag
 import os
 import subprocess
 def alert(text: str, title: str = "z", type: str = "alert"):
@@ -18,5 +17,5 @@ def alert(text: str, title: str = "z", type: str = "alert"):
         Start-Sleep 500
         """
         subprocess.run(["powershell", "-Command", notifStr])
-
-    pag.alert(text, title)
+    elif os.name == "posix":
+        subprocess.run(["notify-send", title, text])

@@ -3,5 +3,7 @@
 ## TODO
 
 - [X] Add sqlite for persitent time tracking
-- [ ] Secure master password
+- [X] make master password
+- [ ] way to do headless initialization (no prompt for password on first run)
 - [ ] implement flask api
+- [ ] implement web interface

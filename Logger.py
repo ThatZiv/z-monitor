@@ -1,6 +1,7 @@
 from os import path
 import logging
 from Store import Store
+from Config import config
 
 class Logger:
     def __init__(self, store: Store):
@@ -13,6 +14,7 @@ class Logger:
         self.store = store
 
     def log(self, message: str):
-        print(message)
+        if config["env"] == "dev":
+            print(message)
         self.store.log(message)
         self.logger.info(msg=message)

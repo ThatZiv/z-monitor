@@ -2,6 +2,7 @@
 Main program configuration
 """
 config: dict = {
+    "env": "dev", # "dev" or "prod"
     "appName": "Monitor",
     "db": "main.db",
     "gui": {

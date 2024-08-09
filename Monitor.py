@@ -48,9 +48,6 @@ class Monitor:
                     print(e)
                     continue
 
-
-
-
 class IoMonitor(Monitor):
     def __init__(self):
         super().__init__()
@@ -66,9 +63,6 @@ class IoMonitor(Monitor):
 
         self.mouseListener.start()
         self.keyboardListener.start()
-
-
-
 
     # keep track of time usage
     def on_interact(self, *args):
@@ -102,18 +96,3 @@ class IoMonitor(Monitor):
     def start(self):
         threading.Thread(target=self.mouseListener.join).start()
         threading.Thread(target=self.keyboardListener.join).start()
-
-
-
-
-# class KeyboardMonitor(Monitor):
-#     def __init__(self, bufferSec = 5):
-#         super().__init__(bufferSec)
-#         self.mouseListener = keyboard.Listener(on_press=self.on_press)
-#         self.mouseListener.start()
-
-#     def on_press(self, key):
-#         self.addTime(self.bufferSec)
-
-#     def start(self):
-#         self.mouseListener.join()

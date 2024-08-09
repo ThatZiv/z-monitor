@@ -17,8 +17,8 @@ def track(monitor: Monitor.IoMonitor):
         try:
             time.sleep(1)
             currentTime = monitor.getTime()
-            # 5 minute warning(s)
-            print(currentTime)
+            if config["env"] == "dev": print(currentTime)
+            # warning notifications
             if len(warnings) > 0:
                 warning = warnings[-1]
                 if currentTime >= monitor.timeLimit - warning:
@@ -30,10 +30,11 @@ def track(monitor: Monitor.IoMonitor):
                 gui.alert("Time limit exceeded. Shutting down...")
                 monitor.logger.log("Time limit exceeded. Shutting down...")
 
-                if os.name == "nt":
-                    os.system("shutdown /s /t 1")
-                elif os.name == "posix":
-                    os.system("shutdown -h now")
+                if config['env'] == "prod":
+                    if os.name == "nt":
+                        os.system("shutdown /s /t 1")
+                    elif os.name == "posix":
+                        os.system("shutdown -h now")
         except Exception as e:
             monitor.logger.log(f"Error: {e}")
             continue

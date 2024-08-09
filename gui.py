@@ -14,8 +14,10 @@ def alert(text: str, title: str = "z", type: str = "alert"):
         $objNotifyIcon.Visible = $True
 
         $objNotifyIcon.ShowBalloonTip(10000)
-        Start-Sleep 500
         """
-        subprocess.run(["powershell", "-Command", notifStr])
+        subprocess.Popen(["powershell", "-WindowStyle", "Hidden" ,"-Command", notifStr],
+            stdin=subprocess.DEVNULL,
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL)
     elif os.name == "posix":
         subprocess.run(["notify-send", title, text])

@@ -4,8 +4,8 @@ from Store import Store
 
 class Logger:
     def __init__(self, store: Store):
-        logging.basicConfig(filename=path.join(path.dirname(__file__),
-            "log.txt"),
+        logging.basicConfig(
+            filename="log.txt",
             level=logging.INFO,
             format=f"[%(asctime)s]: %(name)s - %(levelname)s \n%(message)s",
         )

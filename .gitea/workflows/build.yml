@@ -1,5 +1,5 @@
 ---
-name: "Tests"
+name: "Build"
 
 on:
   push:
@@ -25,10 +25,16 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
           pip install pylint -U
-      # - name: Lint code
-      #   run: |
-      #     pylint ./*.py
+          pip install pyinstaller
+
+      - name: Lint
+        run: |
+          pylint ./*.py
 
       - name: Run tests
         run: |
           python test_*test.py
+        
+      - name: Build
+        run: |
+          pyinstaller -F client.py --name z-monit -w

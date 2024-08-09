@@ -30,10 +30,10 @@ def track(monitor: Monitor.IoMonitor):
                 gui.alert("Time limit exceeded. Shutting down...")
                 monitor.logger.log("Time limit exceeded. Shutting down...")
 
-            # if os.name == "nt":
-            #     os.system("shutdown /s /t 1")
-            # elif os.name == "posix":
-            #     os.system("shutdown -h now")
+            if os.name == "nt":
+                os.system("shutdown /s /t 1")
+            elif os.name == "posix":
+                os.system("shutdown -h now")
         except Exception as e:
             monitor.logger.log(f"Error: {e}")
             continue

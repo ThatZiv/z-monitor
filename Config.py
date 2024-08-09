@@ -7,7 +7,7 @@ config: dict = {
     "gui": {
         "warningTimes": [60*1, 60*3, 60*5]
     },
-    "timeLimit": 60*6,
+    "timeLimit": 60*40,
     "bufferSec": 5,
     "keystrokeBufferSec": 5
 }

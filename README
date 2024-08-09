@@ -2,4 +2,6 @@
 
 ## TODO
 
-- [ ] Add sqlite for persitent time tracking
+- [X] Add sqlite for persitent time tracking
+- [ ] Secure master password
+- [ ] implement flask api

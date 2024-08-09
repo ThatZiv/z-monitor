@@ -4,7 +4,6 @@ from Store import Store
 import time
 import os
 
-
 test_db_file = "db-test.db"
 
 class TestStore(unittest.TestCase):
@@ -43,6 +42,22 @@ class TestStore(unittest.TestCase):
     def test_log(self):
         self.db.log("test")
         self.assertEqual(self.db.get("log", message="test")[0][1], "test")
+
+    def test_password(self):
+        self.assertIsNone(self.db.get_password())
+
+        self.assertRaises(ValueError, self.db.save_password, "passwor")
+        self.assertRaises(ValueError, self.db.save_password, "password123")
+        self.assertRaises(ValueError, self.db.save_password, "password1234")
+        self.assertRaises(ValueError, self.db.save_password, "Password1234")
+        self.assertRaises(ValueError, self.db.save_password, "password1234!")
+        password = "Password1234!"
+        self.db.save_password(password)
+        # check if password is saved
+        self.assertTrue(self.db.get_password())
+
+        # check if password is correct
+        self.assertTrue(self.db.verify_password(password))
 
 if __name__ == '__main__':
     unittest.main()

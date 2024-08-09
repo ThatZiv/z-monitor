@@ -1,6 +1,7 @@
 from pynput import mouse, keyboard
 import threading
 import time
+from getpass import getpass
 from Logger import Logger
 from Config import config
 from Store import Store
@@ -13,6 +14,8 @@ class Monitor:
         self.timeLimit = self.config["timeLimit"]
         self.store = Store()
         self.logger = Logger(self.store)
+
+        self.prompt_password()
 
     def start(self):
         pass
@@ -27,6 +30,25 @@ class Monitor:
 
     def getTime(self):
         return self.store.get_time_used()
+
+    """
+    check if master password exists (if not, prompt user to set one)
+    """
+    def prompt_password(self):
+        if not self.store.get_password():
+            while True:
+                try:
+                    password = getpass("Please set a master admin password: ")
+                    confirm_password = getpass("Please confirm your password: ")
+                    if password != confirm_password:
+                        raise ValueError("Passwords do not match")
+                    self.store.save_password(password)
+                    return password
+                except ValueError as e:
+                    print(e)
+                    continue
+
+
 
 
 class IoMonitor(Monitor):

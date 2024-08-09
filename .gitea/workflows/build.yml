@@ -34,7 +34,7 @@ jobs:
       - name: Run tests
         run: |
           python test_*test.py
-        
+
       - name: Build
         run: |
-          pyinstaller -F client.py --name z-monit -w
+          pyinstaller -F client.py --name z-monit -w --icon=logo.ico

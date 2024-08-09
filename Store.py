@@ -28,7 +28,7 @@ class Store(Database):
         else:
             time_limit = time_limit[0][1]
 
-    def get_today(self) -> None | float:
+    def get_today(self):
         today = self.get("store", name="today")
         if not today:
             return None

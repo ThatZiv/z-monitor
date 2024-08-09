@@ -5,9 +5,9 @@ config: dict = {
     "appName": "z",
     "db": "main.db",
     "gui": {
-        "warningTimes": [60*5, 60*2, 60*1]
+        "warningTimes": [60*1, 60*3, 60*5]
     },
-    "timeLimit": 60*20,
+    "timeLimit": 60*6,
     "bufferSec": 5,
     "keystrokeBufferSec": 5
 }

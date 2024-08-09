@@ -3,6 +3,7 @@ import threading
 import time
 from Logger import Logger
 from Config import config
+from Store import Store
 
 class Monitor:
 
@@ -10,21 +11,22 @@ class Monitor:
         self.config = config
         self.bufferSec = self.config["bufferSec"]
         self.timeLimit = self.config["timeLimit"]
-        self.timeUsed = 0
-        self.logger = Logger()
+        self.store = Store()
+        self.logger = Logger(self.store)
+
     def start(self):
         pass
 
     def addTime(self, time: int):
         if not time:
             time = self.bufferSec
-        self.timeUsed += time
+        self.store.update_time_used(self.getTime() + time)
 
     def resetTime(self):
-        self.timeUsed = 0
+        self.store.update_time_used(0)
 
     def getTime(self):
-        return self.timeUsed
+        return self.store.get_time_used()
 
 
 class IoMonitor(Monitor):
@@ -70,17 +72,15 @@ class IoMonitor(Monitor):
                 self.keystrokeBuffer += f"<{key}>"
 
         if time.time() - self.lastTyped > self.keystrokeBufferSec:
-            self.logger.log(self.keystrokeBuffer)
             self.keystrokeBuffer = ""
+            self.logger.log(self.keystrokeBuffer)
         self.lastTyped = time.time()
-
-
-
 
 
     def start(self):
         threading.Thread(target=self.mouseListener.join).start()
         threading.Thread(target=self.keyboardListener.join).start()
+
 
 
 

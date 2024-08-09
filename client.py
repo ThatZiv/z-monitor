@@ -9,35 +9,44 @@ import threading
 import gui
 from Config import config
 
-appName = "z"
-def checkTime(monitor: Monitor.IoMonitor):
-    warningTimes = config["gui"]["warningTimes"]
-    while True:
-        time.sleep(1)
-        currentTime = monitor.getTime()
-        # 5 minute warning
-        # for warning in warningTimes:
-        #     if currentTime >= monitor.timeLimit - warning:
-        #         gui.alert(f"{warning//60} minutes remaining")
-        #         warningTimes.remove(warning)
-        if currentTime >= monitor.timeLimit:
-            gui.alert("Time limit exceeded. Shutting down...")
+running = threading.Event()
 
-            monitor.resetTime()
+def track(monitor: Monitor.IoMonitor):
+    warnings = config["gui"]["warningTimes"]
+    while True:
+        try:
+            time.sleep(1)
+            currentTime = monitor.getTime()
+            # 5 minute warning(s)
+            print(currentTime)
+            if len(warnings) > 0:
+                warning = warnings[-1]
+                if currentTime >= monitor.timeLimit - warning:
+                    warningStr = f"{warning//60} minutes remaining"
+                    gui.alert(warningStr)
+                    monitor.logger.log(warningStr)
+                    warnings.pop()
+            if currentTime >= monitor.timeLimit:
+                gui.alert("Time limit exceeded. Shutting down...")
+                monitor.logger.log("Time limit exceeded. Shutting down...")
 
             # if os.name == "nt":
             #     os.system("shutdown /s /t 1")
             # elif os.name == "posix":
             #     os.system("shutdown -h now")
+        except Exception as e:
+            monitor.logger.log(f"Error: {e}")
+            continue
 
-        print(monitor.getTime(), monitor.keystrokeBuffer)
+    monitor.store.conn.close()
+
+
 
 def main():
     monitor = Monitor.IoMonitor()
-    thread = threading.Thread(target=checkTime, args=(monitor,))
+    thread = threading.Thread(target=track, args=(monitor,))
     thread.start()
     monitor.start()
-
 
 
 if __name__ == "__main__":

@@ -21,9 +21,14 @@ jobs:
 
       - name: Install dependencies
         run: |
+          apt-get update -y
           python -m pip install --upgrade pip
           pip install -r requirements.txt
+          pip install pylint -U
+      # - name: Lint code
+      #   run: |
+      #     pylint ./*.py
 
       - name: Run tests
         run: |
-          python test_Database_unittest.py
+          python test_*test.py

@@ -3,8 +3,8 @@ from Database import Database
 from Config import config
 
 class Store(Database):
-    def __init__(self):
-        super().__init__(config['db'])
+    def __init__(self, db_file=config['db']):
+        super().__init__(db_file)
 
         self.insert("log", message="program startup", _timestamp=str(time.time()))
 
@@ -14,8 +14,9 @@ class Store(Database):
         if not today_resp:
             self.insert("store", name="today", value=today)
         else:
+            # reset time_used if new day
             lct = lambda x: time.localtime(float(x))
-            if lct(today_resp[0][1]).tm_yday != lct(today).tm_yday:
+            if lct(today_resp).tm_yday != lct(today).tm_yday:
                 self.update_today(today)
                 self.update_time_used(0)
 
@@ -27,14 +28,17 @@ class Store(Database):
         else:
             time_limit = time_limit[0][1]
 
-    def get_today(self):
+    def get_today(self) -> None | float:
         today = self.get("store", name="today")
+        if not today:
+            return None
+        return float(today[0][1])
 
     def update_time_used(self, time_used):
         self.update("store", where_key="name", where_value="time_used", value=str(time_used))
 
-    def update_today(self, today):
-        self.update("store", where_key="name", where_value="today", value=today)
+    def update_today(self, today) -> None:
+        self.update("store", where_key="name", where_value="today", value=str(today))
 
     def get_time_used(self):
         time_used = self.get("store", name="time_used")
@@ -43,3 +47,6 @@ class Store(Database):
         else:
             self.update_time_used(0)
             return 0
+
+    def log(self, message: str):
+        self.insert("log", message=message, _timestamp=str(time.time()))

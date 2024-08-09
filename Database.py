@@ -18,7 +18,7 @@ CREATE TABLE IF NOT EXISTS log (
 
 class Database:
     def __init__(self, db):
-        self.conn = sqlite3.connect(db)
+        self.conn = sqlite3.connect(db, check_same_thread=False)
         self.cur = self.conn.cursor()
         for table_query in queries["init"].split("\n\n"):
             self.cur.execute(table_query)

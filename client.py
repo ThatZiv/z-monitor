@@ -19,16 +19,17 @@ def track(monitor: Monitor.IoMonitor):
         try:
             time.sleep(1)
             currentTime = monitor.getTime()
+            timeLimit = monitor.store.get_time_limit() or config["timeLimit"]
             if config["env"] == "dev": print(currentTime)
             # warning notifications
             if len(warnings) > 0:
                 warning = warnings[-1]
-                if currentTime >= monitor.timeLimit - warning:
+                if currentTime >= timeLimit - warning:
                     warningStr = f"{warning//60} minutes remaining"
                     gui.alert(warningStr)
                     monitor.logger.log(warningStr)
                     warnings.pop()
-            if currentTime >= monitor.timeLimit:
+            if currentTime >= timeLimit:
                 gui.alert("Time limit exceeded. Shutting down...")
                 monitor.logger.log("Time limit exceeded. Shutting down...")
 

@@ -59,5 +59,18 @@ class TestStore(unittest.TestCase):
         # check if password is correct
         self.assertTrue(self.db.verify_password(password))
 
+    def test_time_limit(self):
+        self.assertIsNone(self.db.get_time_limit())
+        self.db.set_time_limit(100)
+        self.assertEqual(self.db.get_time_limit(), 100)
+
+        self.assertRaises(ValueError, self.db.set_time_limit, 100)
+        self.assertRaises(ValueError, self.db.set_time_limit, 24*60*60+1)
+
+        self.assertRaises(ValueError, self.db.set_time_limit, -1)
+
+        self.db.set_time_limit(200)
+        self.assertEqual(self.db.get_time_limit(), 200)
+
 if __name__ == '__main__':
     unittest.main()

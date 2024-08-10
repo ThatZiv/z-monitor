@@ -5,17 +5,23 @@ from getpass import getpass
 from Logger import Logger
 from Config import config
 from Store import Store
+import sys
 
 class Monitor:
 
     def __init__(self):
         self.config = config
         self.bufferSec = self.config["bufferSec"]
-        self.timeLimit = self.config["timeLimit"]
         self.store = Store()
         self.logger = Logger(self.store)
 
-        self.prompt_password()
+        if not self.store.get_password():
+            self.store.save_password(config['defaultPassword'])
+        if not self.store.get_time_used():
+            self.store.update_time_used(0)
+        if not self.store.get_time_limit():
+            self.store.set_time_limit(config["timeLimit"])
+
 
     def start(self):
         pass
@@ -31,22 +37,6 @@ class Monitor:
     def getTime(self):
         return self.store.get_time_used()
 
-    """
-    check if master password exists (if not, prompt user to set one)
-    """
-    def prompt_password(self):
-        if not self.store.get_password():
-            while True:
-                try:
-                    password = getpass("Please set a master admin password: ")
-                    confirm_password = getpass("Please confirm your password: ")
-                    if password != confirm_password:
-                        raise ValueError("Passwords do not match")
-                    self.store.save_password(password)
-                    return password
-                except ValueError as e:
-                    print(e)
-                    continue
 
 class IoMonitor(Monitor):
     def __init__(self):

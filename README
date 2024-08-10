@@ -4,8 +4,17 @@
 
 - [X] Add sqlite for persitent time tracking
 - [X] make master password
+- [ ] **Fix recursive cursor issue**
 - [ ] way to do headless initialization (no prompt for password on first run)
+    - [ ] make config -> to json file that gets removed __after__ first run
 - [X] implement flask api
-- [ ] implement web interface
+- [X] implement web interface
+    - [ ] change password
+    - [ ] pass pc specs to (polling route)
 - [ ] implement websockets for real-time updates
 - [ ] use ssl
+
+## Caveats
+
+- Deleting the db file will reset the timer and password
+- Only works on the same local network (intentional caveat)

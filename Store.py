@@ -30,11 +30,41 @@ class Store(Database):
         else:
             time_limit = time_limit[0][1]
 
+    """
+    Saves the master password to the database
+    """
     def get_today(self):
         today = self.get("store", name="today")
         if not today:
             return None
         return float(today[0][1])
+
+    """
+    Returns the time limit for the user (in seconds)
+    """
+    def get_time_limit(self):
+        limit = self.get("store", name="time_limit")
+        if limit:
+            return int(limit[0][1])
+        else:
+            return None
+
+    """
+    Sets the time limit for the user (in seconds)
+    """
+    def set_time_limit(self, time_limit=config["timeLimit"]):
+        current_limit = self.get_time_limit()
+        if time_limit == current_limit:
+            raise ValueError("Time limit is already set to this value")
+        elif time_limit < 0:
+            raise ValueError("Time limit must be greater than 0")
+        elif time_limit >= 60*60*24:
+            raise ValueError("Time limit must be less than 24 hours")
+
+        if not current_limit:
+            self.insert("store", name="time_limit", value=str(time_limit))
+        else:
+            self.update("store", where_key="name", where_value="time_limit", value=str(time_limit))
 
     def update_time_used(self, time_used):
         self.update("store", where_key="name", where_value="time_used", value=str(time_used))

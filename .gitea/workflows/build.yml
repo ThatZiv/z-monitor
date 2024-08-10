@@ -37,4 +37,4 @@ jobs:
 
       - name: Build
         run: |
-          pyinstaller -F client.py --name z-monit -w --icon=templates/static/logo.ico
+          pyinstaller -F client.py --name z-monit -w --icon=static/logo.ico --collect-submodules bcrypt --add-data templates:templates

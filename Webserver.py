@@ -47,7 +47,7 @@ class Webserver:
             return redirect(url_for("home", alert="Alert sent"))
 
     def run(self):
-        self.app.run(debug=config["env"]=="dev", use_reloader=False)
+        self.app.run(debug=config["env"]=="dev", use_reloader=False, host="0.0.0.0")
 
 if __name__ == '__main__':
     store = Store()

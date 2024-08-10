@@ -16,7 +16,7 @@ class Auth(BasicAuth):
 
 class Webserver:
     def __init__(self, store: Store):
-        self.app = Flask(__name__)
+        self.app = Flask(__name__, template_folder="templates", static_folder="static")
         self.basic_auth = Auth(self.app, store)
         self.store = store
 
@@ -47,7 +47,12 @@ class Webserver:
             return redirect(url_for("home", alert="Alert sent"))
 
     def run(self):
-        self.app.run(debug=config["env"]=="dev", use_reloader=False, host="0.0.0.0")
+        self.app.run(
+            debug=config["env"]=="dev",
+            use_reloader=False,
+            host="0.0.0.0",
+            port=config["webserverPort"]
+        )
 
 if __name__ == '__main__':
     store = Store()

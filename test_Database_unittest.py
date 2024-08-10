@@ -15,6 +15,8 @@ class TestDatabase(unittest.TestCase):
         self.assertEqual(self.db.get("store", name="test"), [("test", "test")])
         self.db.insert("log", message="test", _timestamp="test")
         self.assertEqual(self.db.get("log", message="test"), [(1, "test", "test")])
+        self.db.insert("log", message="test2", _timestamp="test2")
+        self.assertEqual(self.db.get("log"), [(1, "test", "test"), (2, "test2", "test2")])
 
     def test_update(self):
         name = "key"

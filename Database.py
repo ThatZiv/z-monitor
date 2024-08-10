@@ -43,6 +43,9 @@ class Database:
     def get(self, table, **kwargs):
         columns = kwargs.keys()
         values = kwargs.values()
+        if not columns:
+            self.cur.execute(f"SELECT * FROM {table}")
+            return self.cur.fetchall()
         prefills = " AND ".join([f"{column} = ?" for column in columns])
         self.cur.execute(f"SELECT * FROM {table} WHERE {prefills}", list(values))
         return self.cur.fetchall()

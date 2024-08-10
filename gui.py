@@ -1,6 +1,8 @@
 import os
 import subprocess
-def alert(text: str, title: str = "z", type: str = "alert"):
+
+from Config import config
+def alert(text: str, title: str = config['appName'], type: str = "alert"):
     if os.name == "nt":
         notifStr = f"""
         [void] [System.Reflection.Assembly]::LoadWithPartialName("System.Windows.Forms")

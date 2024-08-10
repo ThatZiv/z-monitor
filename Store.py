@@ -53,6 +53,9 @@ class Store(Database):
     def log(self, message: str):
         self.insert("log", message=message, _timestamp=str(time.time()))
 
+    def get_logs(self):
+        return self.get("log")
+
     """
     Returns the master password if it exists, otherwise None.
     """

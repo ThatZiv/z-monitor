@@ -5,5 +5,7 @@
 - [X] Add sqlite for persitent time tracking
 - [X] make master password
 - [ ] way to do headless initialization (no prompt for password on first run)
-- [ ] implement flask api
+- [X] implement flask api
 - [ ] implement web interface
+- [ ] implement websockets for real-time updates
+- [ ] use ssl

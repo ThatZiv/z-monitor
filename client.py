@@ -8,8 +8,10 @@ import Monitor
 import threading
 import gui
 from Config import config
+from Webserver import Webserver
 
-running = threading.Event()
+def run_webserver(webserver: Webserver):
+    webserver.run()
 
 def track(monitor: Monitor.IoMonitor):
     warnings = config["gui"]["warningTimes"]
@@ -45,7 +47,10 @@ def track(monitor: Monitor.IoMonitor):
 
 def main():
     monitor = Monitor.IoMonitor()
+    webserver = Webserver(monitor.store)
     thread = threading.Thread(target=track, args=(monitor,))
+    webserver_thread = threading.Thread(target=run_webserver, args=(webserver,))
+    webserver_thread.start()
     thread.start()
     monitor.start()
 

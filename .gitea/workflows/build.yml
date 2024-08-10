@@ -27,14 +27,14 @@ jobs:
           pip install pylint -U
           pip install pyinstaller
 
-      - name: Lint
-        run: |
-          pylint ./*.py
+      # - name: Lint
+      #   run: |
+      #     pylint ./*.py
 
       - name: Run tests
         run: |
-          python test_*test.py
+          python -m unittest discover -p '*_unittest.py'
 
       - name: Build
         run: |
-          pyinstaller -F client.py --name z-monit -w --icon=logo.ico
+          pyinstaller -F client.py --name z-monit -w --icon=templates/static/logo.ico

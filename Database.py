@@ -11,7 +11,8 @@ CREATE TABLE IF NOT EXISTS store (
 CREATE TABLE IF NOT EXISTS log (
     id INTEGER PRIMARY KEY,
     message TEXT,
-    _timestamp REAL
+    _timestamp REAL,
+    type TEXT DEFAULT "info"
 )
 """
 }

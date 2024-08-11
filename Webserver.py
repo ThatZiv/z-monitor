@@ -34,7 +34,9 @@ class Webserver:
         @self.app.route('/logs')
         @self.basic_auth.required
         def logs():
-            return self.store.get_logs()
+            limit = int(request.args.get("limit") or 50)
+            page = int(request.args.get("page") or 0)
+            return self.store.get_logs(page, limit)
 
         @self.app.route('/alert', methods=["POST"])
         @self.basic_auth.required
@@ -42,7 +44,7 @@ class Webserver:
             text = request.form.get("alert")
             if not text:
                 return "No alert text provided"
-            self.store.log(f"Alert sent from web UI: {text}")
+            self.store.log(f"Alert sent from web UI: {text}", type="ui")
             gui.alert(text)
             return "Alert sent"
 

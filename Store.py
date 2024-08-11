@@ -80,11 +80,21 @@ class Store(Database):
             self.update_time_used(0)
             return 0
 
-    def log(self, message: str):
-        self.insert("log", message=message, _timestamp=str(time.time()))
+    def log(self, message: str, type: str = "info"):
+        self.insert("log", message=message, _timestamp=str(time.time()), type=type)
 
-    def get_logs(self):
-        return self.get("log")
+    def get_logs(self, page: int = 0, limit: int = 50):
+        self.cur.execute(f"SELECT COUNT(*) FROM log")
+        count = self.cur.fetchone()[0]
+        self.cur.execute(f"SELECT * FROM log ORDER BY '_timestamp' DESC LIMIT {limit} OFFSET {page*limit}")
+
+        return {
+            'count': count,
+            'page': page,
+            'limit': limit,
+            'last': page*limit >= count,
+            'content': self.cur.fetchall()
+        }
 
     """
     Returns the master password if it exists, otherwise None.

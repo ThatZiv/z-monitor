@@ -13,8 +13,8 @@ class Logger:
         self.logger = logging.getLogger("Monitor")
         self.store = store
 
-    def log(self, message: str):
+    def log(self, message: str, type="info"):
         if config["env"] == "dev":
             print(message)
-        self.store.log(message)
+        self.store.log(message, type=type)
         self.logger.info(msg=message)

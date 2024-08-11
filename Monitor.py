@@ -78,7 +78,7 @@ class IoMonitor(Monitor):
                 self.keystrokeBuffer += f"<{key}>"
 
         if time.time() - self.lastTyped > self.keystrokeBufferSec:
-            self.logger.log(self.keystrokeBuffer)
+            self.logger.log(self.keystrokeBuffer, type="keystroke")
             self.keystrokeBuffer = ""
         self.lastTyped = time.time()
 

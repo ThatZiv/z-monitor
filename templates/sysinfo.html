@@ -1,0 +1,15 @@
+<div
+    class="flex justify-between items-center content-center grid grid-cols-6 gap-3"
+>
+    <strong>CPU</strong>
+    <progress class="col-span-5" value="{{ cpu }}" max="100"></progress>
+    <strong>Memory</strong>
+    <progress class="col-span-5" value="{{ memory }}" max="100"></progress>
+    <div class="col-span-6 grid grid-cols-8 gap-1 place-content-start">
+        <strong class="col-span-2">Network</strong>
+        <p class="col-span-3">Send: {{ network['sent'] }}</p>
+        <p class="col-span-3">Recieve: {{ network['received'] }}</p>
+    </div>
+    <strong>Storage</strong>
+    <progress class="col-span-5" value="{{ disk }}" max="100"></progress>
+</div>

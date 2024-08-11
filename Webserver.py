@@ -3,11 +3,11 @@ from flask_basicauth import BasicAuth
 from Store import Store
 from Config import config
 import os
-
 import gui
+import Pc
 
 class Auth(BasicAuth):
-    def __init__(self, app: Flask, store: Store):
+    def __init__(self, app: Flask, store: Store = Store()):
         super().__init__(app)
         self.store = store
 
@@ -16,18 +16,19 @@ class Auth(BasicAuth):
 
 class Webserver:
     def __init__(self, store: Store):
+        self.store = store
         self.app = Flask(__name__, template_folder="templates", static_folder="static")
         self.basic_auth = Auth(self.app, store)
-        self.store = store
+        self.pc = Pc.Info()
+        self.static_info = self.pc.get_info()
 
         @self.app.route('/')
         @self.basic_auth.required
         def home():
             return render_template("index.html",
                 title=config["appName"],
-                time_used=self.store.get_time_used(),
                 cfg=config,
-                alert=request.args.get("alert")
+                static_info=self.static_info,
             )
 
         @self.app.route('/logs')
@@ -40,11 +41,27 @@ class Webserver:
         def alert():
             text = request.form.get("alert")
             if not text:
-                return redirect(url_for("home", alert="No alert text provided"))
+                return "No alert text provided"
             self.store.log(f"Alert sent from web UI: {text}")
             gui.alert(text)
-            # no redirect
-            return redirect(url_for("home", alert="Alert sent"))
+            return "Alert sent"
+
+        @self.app.route('/pc/sysinfo', methods=["GET"])
+        @self.basic_auth.required
+        def sysinfo():
+            # if query params type = json, return json
+            if request.args.get("type") == "json":
+                return self.pc.get_system_info()
+
+            return render_template("sysinfo.html", **self.pc.get_system_info())
+
+        @self.app.route("/timeleft", methods=["GET"])
+        @self.basic_auth.required
+        def timeleft():
+            return render_template("timeleft.html",
+                time_used=self.store.get_time_used(),
+                time_limit=self.store.get_time_limit()
+            )
 
     def run(self):
         self.app.run(

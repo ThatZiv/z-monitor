@@ -8,35 +8,89 @@
             rel="stylesheet"
             href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css"
         />
+        <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+            integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
+            crossorigin="anonymous"
+            referrerpolicy="no-referrer"
+        />
         <script src="https://cdn.tailwindcss.com"></script>
         <title>{{ title }}</title>
         <link rel="icon" href="static/logo.ico" />
+        <script src="https://unpkg.com/htmx.org@2.0.1"></script>
+        <script src="static/index.js"></script>
     </head>
     <body>
         <main class="container">
-            {% if alert %}
-                <div class="p-2 mb-4 md:text-center rounded-md bg-cyan-600 opacity-55"><p class="text-white">{{ alert }}</p></div>
-            {% endif %}
-            <nav class="rounded-lg bg-gray-800 text-white p-2 mb-4">
-              <ul class="flex">
-                <img src="static/logo.png" class="rounded-md ml-2 hover:animate-ping" style="max-width: 100%;"><li class="text-2xl"><strong>{{ title }} - Web Admin </strong></li>
-              </ul>
-              <ul class="text-blue-600 hover:text-blue-400">
-                <li><a href="{{ url_for('logs') }}">Logs</a></li>
-              </ul>
-            </nav>
-            <div>
-                <h2 class="text-xl">Time for today:</h2>
-                <progress
-                    value="{{ time_used }}"
-                    max="{{ cfg['timeLimit'] }}"
-                />
+            <div class="flex justify-center marquee 25s linear infinite">
+                <p id="alert" class="mb-4 text-center animate-pulse"></p>
             </div>
-            <p>Time used: <b>{{ time_used//60 }}m / {{ cfg["timeLimit"]//60 }}m</p></b>
-            <br/>
-            <div>
-                <form action="{{ url_for('alert') }}" method="post">
-                    <label for="alert">Send an alert to {{ "<PC NAME>" }}</label>
+            <nav class="rounded-lg bg-gray-800 text-white p-2 mb-4">
+                <ul class="flex">
+                    <img
+                        src="static/logo.png"
+                        class="rounded-md ml-2 hover:animate-ping"
+                        style="max-width: 100%"
+                    />
+                    <li class="text-2xl">
+                        <strong>{{ title }} - Web Admin </strong>
+                    </li>
+                </ul>
+                <ul class="text-blue-600 hover:text-blue-400">
+                    <li><a href="{{ url_for('logs') }}">Logs</a></li>
+                </ul>
+            </nav>
+            <div class="flex items-center gap-2">
+                {% if static_info["os"] == "nt" %}
+                <i class="fa-brands fa-windows"></i>
+                {% elif static_info["os"] == "posix" %}
+                <i class="fa-brands fa-linux"></i>
+                {% elif static_info["os"] == "darwin" %}
+                <i class="fa-brands fa-apple"></i>
+                {% endif %}
+                <h2 class="text-2xl mb-1">{{ static_info["hostname"] }}</h2>
+            </div>
+            <details open>
+                <summary role="button" class="secondary">
+                    <i class="fa-solid fa-computer mr-1"></i>System overview
+                </summary>
+                <div
+                    id="info"
+                    hx-swap="innerHTML"
+                    hx-get="/pc/sysinfo"
+                    hx-indicator="#sysindicator"
+                    hx-trigger="load, every 3s"
+                ></div>
+                <span
+                    id="sysindicator"
+                    class="htmx-indicator"
+                    aria-busy="true"
+                ></span>
+            </details>
+            <details>
+                <summary role="button" class="secondary">
+                    <i class="fa-solid fa-clock mr-1"></i>Time tracking
+                </summary>
+                <div
+                    hx-get="/timeleft"
+                    hx-swap="innerHTML"
+                    hx-trigger="load delay:1s, every 1m"
+                >
+                    <br />
+                </div>
+            </details>
+            <details>
+                <summary role="button" class="secondary">
+                    <i class="fa-solid fa-bell mr-1"></i>Alert
+                </summary>
+                <form
+                    hx-post="{{ url_for('alert') }}"
+                    hx-swap="textContent"
+                    hx-target="#alert"
+                    hx-indicator="#indicator"
+                >
+                    <label for="alert">Send an alert to </label>
                     <input
                         type="text"
                         id="alert"
@@ -44,8 +98,11 @@
                         placeholder="Alert message"
                     />
                     <button type="submit">Send</button>
+                    <span id="indicator" class="htmx-indicator" aria-busy="true"
+                        >Sending to {{ static_info['hostname'] }}</span
+                    >
                 </form>
-            </div>
+            </details>
         </main>
     </body>
 </html>

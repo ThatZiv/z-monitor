@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, url_for, redirect
 from flask_basicauth import BasicAuth
 from Store import Store
 from Config import config
+import time
 import os
 import gui
 import Pc
@@ -34,9 +35,19 @@ class Webserver:
         @self.app.route('/logs')
         @self.basic_auth.required
         def logs():
-            limit = int(request.args.get("limit") or 50)
+            limit = int(request.args.get("limit") or 100)
             page = int(request.args.get("page") or 0)
-            return self.store.get_logs(page, limit)
+            # type = request.args.get("type")
+            types = list(set(request.args.getlist("type")))
+
+            logs = self.store.get_logs(page, limit, type=types)
+            return render_template("logs.html",
+                pages=logs['count']//limit,
+                logs=[(*log[:2],time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(log[2])), *log[3:]) for log in logs['content']],
+                page_num=page,
+                limit=limit,
+                type=''.join([f"&type={type}" for type in types])
+            )
 
         @self.app.route('/alert', methods=["POST"])
         @self.basic_auth.required
@@ -54,7 +65,6 @@ class Webserver:
             # if query params type = json, return json
             if request.args.get("type") == "json":
                 return self.pc.get_system_info()
-
             return render_template("sysinfo.html", **self.pc.get_system_info())
 
         @self.app.route("/timeleft", methods=["GET"])

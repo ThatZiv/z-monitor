@@ -22,6 +22,8 @@ class Monitor:
         if not self.store.get_time_limit():
             self.store.set_time_limit(config["timeLimit"])
 
+        self.store.log("log", "program startup")
+
 
     def start(self):
         pass

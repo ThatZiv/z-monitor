@@ -40,8 +40,41 @@ class TestStore(unittest.TestCase):
         self.assertEqual(self.db.get_time_used(), 100)
 
     def test_log(self):
-        self.db.log("test")
-        self.assertEqual(self.db.get("log", message="test")[0][1], "test")
+        self.db.log("test1")
+        self.assertEqual(self.db.get("log", message="test1")[0][1], "test1")
+
+        self.db.log("test2", "ui")
+        self.db.log("test3", "keystroke")
+        self.db.log("test4", "ui")
+        self.db.log("test5", "info")
+        self.db.log("test6", "info")
+        self.db.log("test7", "info")
+        self.db.log("test8", "info")
+        self.db.log("test9", "info")
+        self.db.log("test10", "info")
+
+        # test pagination
+        page = 0
+        while page < 5:
+            logs_resp = self.db.get_logs(page=page, limit=2)
+            self.assertEqual(len(logs_resp['content']), 2)
+            self.assertEqual(logs_resp['count'], 10)
+            self.assertEqual(logs_resp['page'], page)
+            self.assertEqual(logs_resp['limit'], 2)
+            self.assertEqual(logs_resp['content'][0][1], f"test{10 - page * 2}")
+            if page == 5:
+                self.assertTrue(logs_resp['last'])
+            page += 1
+
+        logs = self.db.get_logs(type=['info'])
+        self.assertEqual(logs['count'], 7)
+        logs = self.db.get_logs(type=['ui'])
+        self.assertEqual(logs['count'], 2)
+        logs = self.db.get_logs(type=['keystroke', 'ui'])
+        self.assertEqual(logs['count'], 3)
+
+
+
 
     def test_password(self):
         self.assertIsNone(self.db.get_password())

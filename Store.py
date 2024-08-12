@@ -1,4 +1,5 @@
 import time
+from typing import Optional
 from Database import Database
 from Config import config
 from getpass import getpass
@@ -7,8 +8,6 @@ import bcrypt
 class Store(Database):
     def __init__(self, db_file=config['db']):
         super().__init__(db_file)
-
-        self.insert("log", message="program startup", _timestamp=str(time.time()))
 
         # check if config.today exists
         today_resp = self.get_today()
@@ -83,13 +82,15 @@ class Store(Database):
     def log(self, message: str, type: str = "info"):
         self.insert("log", message=message, _timestamp=str(time.time()), type=type)
 
-    def get_logs(self, page: int = 0, limit: int = 50):
-        self.cur.execute(f"SELECT COUNT(*) FROM log")
+    def get_logs(self, page: int = 0, limit: int = 50, type: list[str] = []):
+        type_list = ','.join([f"'{t}'" for t in type])
+        filter_query = f"WHERE type IN ({type_list})" if len(type) > 0 else ""
+        self.cur.execute(f"SELECT COUNT(*) FROM log {filter_query}")
         count = self.cur.fetchone()[0]
-        self.cur.execute(f"SELECT * FROM log ORDER BY '_timestamp' DESC LIMIT {limit} OFFSET {page*limit}")
+        self.cur.execute(f"SELECT * FROM log {filter_query} ORDER BY _timestamp DESC LIMIT {limit} OFFSET {page*limit}")
 
         return {
-            'count': count,
+            'count': int(count),
             'page': page,
             'limit': limit,
             'last': page*limit >= count,

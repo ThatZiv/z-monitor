@@ -1,0 +1,28 @@
+<select name="type" aria-label="Select log types" 
+     hx-get="/logs?page={{ page_num }}"
+     hx-swap="innerHTML" multiple hx-target="#logs" size="4">
+    <option disabled>Select log types</option>
+    <option>ui</option>
+    <option>keybind</option>
+    <option>info</option>
+</select>
+<ul class="list-none text-xs">
+    {% for log in logs %}
+    <p>{{ log }}</p>
+    {% endfor %}
+</ul>
+<div class="flex justify-items gap-2 overflow-x">
+    {% for page in range(0,pages+1) %}
+    <a
+        {% if page_num == page %}
+        class="text-blue-400 hover:under"
+        {% else %}
+        class="text-blue-500 hover:underline cursor-pointer"
+        {% endif %}
+        hx-target="#logs"
+        hx-swap="innerHTML"
+        hx-get="/logs?page={{ page }}{{ type }}"
+        >{{ page+1 }}
+    </a>
+    {% endfor %}
+</div>

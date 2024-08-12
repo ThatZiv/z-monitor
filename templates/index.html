@@ -103,6 +103,19 @@
                     >
                 </form>
             </details>
+            <details>
+                <summary role="button" class="secondary">
+                    <i class="fa-solid fa-file-alt mr-1"></i>Logs
+                </summary>
+                <div id="logs"></div>
+                <span
+                    hx-get="/logs"
+                    hx-target="#logs"
+                    hx-trigger="load delay:1s"
+                    hx-swap="innerHTML"
+                ></span>
+                <!-- <div hx-get="/logs" hx-trigger="load delay:1s"></div> -->
+            </details>
         </main>
     </body>
 </html>

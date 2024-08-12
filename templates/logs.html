@@ -1,9 +1,10 @@
-<select name="type" aria-label="Select log types" 
+<select name="type" aria-label="Select log types"
      hx-get="/logs?page={{ page_num }}"
+     hx-trigger="change delay:2s"
      hx-swap="innerHTML" multiple hx-target="#logs" size="4">
     <option disabled>Select log types</option>
     <option>ui</option>
-    <option>keybind</option>
+    <option>keystroke</option>
     <option>info</option>
 </select>
 <ul class="list-none text-xs">

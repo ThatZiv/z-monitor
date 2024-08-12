@@ -5,7 +5,7 @@
 - [X] Add sqlite for persitent time tracking
 - [X] make master password
 - [ ] **Fix recursive cursor issue**
-- [ ] Continue get_logs custom filter for type w/ htmx frontend (use events?
+- [X] Continue get_logs custom filter for type w/ htmx frontend (use events?
 - [ ] way to do headless initialization (no prompt for password on first run)
     - [ ] make config -> to json file that gets removed __after__ first run
 - [X] implement flask api

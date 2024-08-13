@@ -1,0 +1,25 @@
+<nav class="rounded-lg bg-gray-800 text-white p-2 mb-4">
+    <ul class="flex">
+        <img
+            src="static/logo.png"
+            class="rounded-md ml-2 hover:animate-ping"
+            style="max-width: 100%"
+        />
+        <li class="text-2xl">
+            <strong>{{ title }} - Web Admin </strong>
+            <span class="text-xl">
+                <i> running on </i>
+                {{ static_info["hostname"] }} {% if static_info["os"] == "nt" %}
+                <i class="fa-brands fa-windows"></i>
+                {% elif static_info["os"] == "posix" %}
+                <i class="fa-brands fa-linux"></i>
+                {% elif static_info["os"] == "darwin" %}
+                <i class="fa-brands fa-apple"></i>
+                {% endif %}
+            </span>
+        </li>
+    </ul>
+    <ul class="text-blue-600 hover:text-blue-400">
+        <!-- <li><a href="{{ url_for('logs') }}">Logs</a></li> -->
+    </ul>
+</nav>

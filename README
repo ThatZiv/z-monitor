@@ -4,12 +4,17 @@
 
 - [X] Add sqlite for persitent time tracking
 - [X] make master password
-- [ ] **Fix recursive cursor issue**
+- [X] **Fix recursive cursor issue**
+    - [ ] test if these [locks](https://stackoverflow.com/questions/26629080/python-and-sqlite3-programmingerror-recursive-use-of-cursors-not-allowed) ruin or defer any sort of tracking
+    - If it does, should I try a [queue](https://www.geeksforgeeks.org/queue-in-python/) instead?
+- [ ] log activity changes (processes list?)
 - [X] Continue get_logs custom filter for type w/ htmx frontend (use events?
 - [ ] way to do headless initialization (no prompt for password on first run)
     - [ ] make config -> to json file that gets removed __after__ first run
+    - [ ] or just build out a simple gui?
 - [X] implement flask api
 - [X] implement web interface
+    - [ ] set time
     - [ ] change password
     - [X] pass pc specs to (polling route)
 - [ ] ~~implement websockets for real-time updates~~

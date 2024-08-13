@@ -67,13 +67,23 @@ class Webserver:
                 return self.pc.get_system_info()
             return render_template("sysinfo.html", **self.pc.get_system_info())
 
-        @self.app.route("/timeleft", methods=["GET"])
+        @self.app.route("/timeleft", methods=["GET", "POST"])
         @self.basic_auth.required
         def timeleft():
-            return render_template("timeleft.html",
-                time_used=self.store.get_time_used(),
-                time_limit=self.store.get_time_limit()
-            )
+            if request.method == "POST":
+                time_limit = request.form.get("set-time-limit")
+                if not time_limit:
+                    return "No time limit provided"
+                try:
+                    self.store.set_time_limit(int(time_limit))
+                except ValueError as e:
+                    return str(e)
+                return "Time limit has been changed"
+            elif request.method == "GET":
+                return render_template("timeleft.html",
+                    time_used=self.store.get_time_used(),
+                    time_limit=self.store.get_time_limit()
+                )
 
     def run(self):
         self.app.run(

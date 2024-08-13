@@ -83,19 +83,23 @@ class Store(Database):
         self.insert("log", message=message, _timestamp=str(time.time()), type=type)
 
     def get_logs(self, page: int = 0, limit: int = 50, type: list[str] = []):
-        type_list = ','.join([f"'{t}'" for t in type])
-        filter_query = f"WHERE type IN ({type_list})" if len(type) > 0 else ""
-        self.cur.execute(f"SELECT COUNT(*) FROM log {filter_query}")
-        count = self.cur.fetchone()[0]
-        self.cur.execute(f"SELECT * FROM log {filter_query} ORDER BY _timestamp DESC LIMIT {limit} OFFSET {page*limit}")
+        try:
+            self.lock.acquire(True)
+            type_list = ','.join([f"'{t}'" for t in type])
+            filter_query = f"WHERE type IN ({type_list})" if len(type) > 0 else ""
+            self.cur.execute(f"SELECT COUNT(*) FROM log {filter_query}")
+            count = self.cur.fetchone()[0]
+            self.cur.execute(f"SELECT * FROM log {filter_query} ORDER BY _timestamp DESC LIMIT {limit} OFFSET {page*limit}")
 
-        return {
-            'count': int(count),
-            'page': page,
-            'limit': limit,
-            'last': page*limit >= count,
-            'content': self.cur.fetchall()
-        }
+            return {
+                'count': int(count),
+                'page': page,
+                'limit': limit,
+                'last': page*limit >= count,
+                'content': self.cur.fetchall()
+            }
+        finally:
+            self.lock.release()
 
     """
     Returns the master password if it exists, otherwise None.

@@ -1,5 +1,59 @@
-<h2 class="text-2xl">Time for today</h2>
+<h2 class="text-2xl">
+    Time used today:
+    <span class="text-lg"
+        ><b>{{ time_used//60 }}m</b> out of <b>{{ time_limit//60 }}m</b></span
+    >
+</h2>
 <progress value="{{ time_used }}" max="{{ time_limit }}"></progress>
-<p>
-    Time used: <b>{{ time_used//60 }}m</b> out of <b>{{ time_limit//60 }}m</b>
-</p>
+<form
+    hx-post="{{ url_for('timeleft') }}"
+    hx-swap="textContent"
+    hx-target="#alert"
+>
+    <label>
+        Set time limit:
+        <span class="font-bold" id="preview-set-time-limit"></span>
+        <input
+            id="set-time-limit"
+            name="set-time-limit"
+            type="range"
+            min="5"
+            step="5"
+            value="{{ time_limit }}"
+            max="{{ 60*60*5 }}"
+        />
+        <!-- TODO: trigger parent element -->
+            <button type="submit" onclick="()=>htmx.trigger('#timeleft', 'htmx:load')">Set</button>
+        </div>
+    </label>
+</form>
+<script defer>
+    function toHHMMSS(secs) {
+        var sec_num = parseInt(secs, 10);
+        var hours = Math.floor(sec_num / 3600);
+        var minutes = Math.floor((sec_num - hours * 3600) / 60);
+        var seconds = sec_num - hours * 3600 - minutes * 60;
+
+        if (hours < 10) {
+            hours = "0" + hours;
+        }
+        if (minutes < 10) {
+            minutes = "0" + minutes;
+        }
+        if (seconds < 10) {
+            seconds = "0" + seconds;
+        }
+        return hours + "h " + minutes + "m " + seconds + "s";
+    }
+    setTime("{{ time_limit }}");
+    function setTime(time) {
+        document.querySelector("#set-time-limit").value = time;
+        document.querySelector("#preview-set-time-limit").textContent =
+            toHHMMSS(time);
+    }
+    document
+        .querySelector("#set-time-limit")
+        .addEventListener("input", function () {
+            setTime(this.value);
+        });
+</script>

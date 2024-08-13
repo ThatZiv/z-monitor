@@ -49,12 +49,15 @@
                     <i class="fa-solid fa-clock mr-1"></i>Time tracking
                 </summary>
                 <div
-                    hx-get="/timeleft"
+                    hx-get="{{ url_for('timeleft') }}"
                     hx-swap="innerHTML"
+                    id="timeleft"
+                    hx-indicator="#timeindicator"
                     hx-trigger="load delay:1s, every 1m"
+                ></div>
+                <span class="htmx-indicator" id="timeindicator" aria-busy="true"
+                    >Loading time activity</span
                 >
-                    <br />
-                </div>
             </details>
             <details>
                 <summary role="button" class="secondary">
@@ -69,7 +72,6 @@
                     <label for="alert">Send an alert to </label>
                     <input
                         type="text"
-                        id="alert"
                         name="alert"
                         placeholder="Alert message"
                     />
